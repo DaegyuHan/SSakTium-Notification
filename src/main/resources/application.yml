@@ -1,0 +1,37 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /
+    encoding:
+      charset : UTF-8
+      enabled: true
+      force: true
+
+spring:
+  web:
+    resources:
+      static-locations: classpath:/static/
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: ${DB_URL_DEV}
+    username: ${DB_USERNAME_DEV}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: ${DB_PASSWORD_DEV}
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 5MB
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+app:
+  kafka-brokers : "127.0.0.1:19092, 127.0.0.1:19093, 127.0.0.1:19094"
