@@ -1,5 +1,7 @@
 package com.sparta.notification.domain.notifications.controller;
 
+import com.sparta.notification.domain.common.AuthTokenHolder;
+import com.sparta.notification.domain.notifications.client.UserClient;
 import com.sparta.notification.domain.notifications.entity.Notification;
 import com.sparta.notification.domain.notifications.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +20,23 @@ import java.util.List;
 public class NotificationController {
 
     private final NotificationService notificationService;
+    private final UserClient userClient;
 
-    @GetMapping(value = "/v1/notifications/{userId}/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(@PathVariable Long userId) {
-        log.info("🔔 Subscription request received for userId: {}", userId);
+    @GetMapping("/v1/notifications/subscribe")
+    public SseEmitter subscribe(@RequestHeader("Authorization") String authHeader) {
+        log.info("🔔 구독 완료");
 
-        return notificationService.subscribe(userId);
+        // 토큰 저장
+        AuthTokenHolder.setToken(authHeader);
+
+        // 이후 서비스 로직
+        Long userId = userClient.getMyInfo().getUserId();
+        SseEmitter emitter = notificationService.subscribe(userId);
+
+        // ThreadLocal 정리
+        AuthTokenHolder.clear();
+
+        return emitter;
     }
 
     @PatchMapping("/v1/notifications/{id}/read")
