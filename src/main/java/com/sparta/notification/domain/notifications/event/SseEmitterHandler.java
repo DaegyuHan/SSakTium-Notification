@@ -58,4 +58,8 @@ public class SseEmitterHandler {
             return false;
         }
     }
+
+    public boolean hasEmitter(String topic) {
+        return emittersPerTopic.containsKey(topic);
+    }
 }

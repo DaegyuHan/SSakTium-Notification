@@ -31,14 +31,14 @@ public class Notification {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    public void changeStatusRead() {
-        readStatus = true;
-    }
-
     public Notification(Long userId, EventType eventType, String message) {
         this.userId = userId;
         this.eventType = eventType;
         this.message = message;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public void changeStatusRead() {
+        this.readStatus = true;
     }
 }

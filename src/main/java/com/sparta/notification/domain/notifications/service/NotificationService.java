@@ -55,7 +55,21 @@ public class NotificationService {
         notificationRepository.deleteAll(oldNotifications);
     }
 
-    public List<Notification> getUnreadNotifications(Long userId) {
-        return notificationRepository.findAllByUserIdOrderByCreatedAt(userId);
+    @Transactional
+    public void sendUnreadNotifications(Long userId) {
+        String topic = "notifications-" + userId;
+        List<Notification> unreadNotifications = notificationRepository.findByUserIdAndReadStatusFalse(userId);
+
+        for (Notification notification : unreadNotifications) {
+            String data = "EventType: " + notification.getEventType()
+                    + ", Message: " + notification.getMessage();
+
+            sseEmitterHandler.broadcast(topic, data);
+
+            notification.changeStatusRead();
+        }
+        notificationRepository.saveAll(unreadNotifications);
+
+        log.info("📦 미읽은 알림 {}건 유저 {}에게 전송 완료", unreadNotifications.size(), userId);
     }
 }

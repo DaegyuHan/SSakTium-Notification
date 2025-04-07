@@ -33,6 +33,9 @@ public class NotificationController {
         Long userId = userClient.getMyInfo().getUserId();
         SseEmitter emitter = notificationService.subscribe(userId);
 
+        // 미확인 알림 전송
+        notificationService.sendUnreadNotifications(userId);
+
         // ThreadLocal 정리
         AuthTokenHolder.clear();
 
