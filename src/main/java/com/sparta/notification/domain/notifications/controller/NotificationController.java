@@ -22,20 +22,8 @@ public class NotificationController {
     @GetMapping(value = "/v1/notifications/{userId}/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@PathVariable Long userId) {
         log.info("🔔 Subscription request received for userId: {}", userId);
-        SseEmitter emitter = notificationService.subscribe(userId);
 
-        List<Notification> notifications = notificationService.getUnreadNotifications(userId);
-        notifications.forEach(notification -> {
-            try {
-                emitter.send(SseEmitter.event()
-                        .name("notification")
-                        .data("EventType: " + notification.getEventType() + ", Message: " + notification.getMessage()));
-            } catch (IOException e) {
-                emitter.completeWithError(e);
-            }
-        });
-
-        return emitter;
+        return notificationService.subscribe(userId);
     }
 
     @PatchMapping("/v1/notifications/{id}/read")
