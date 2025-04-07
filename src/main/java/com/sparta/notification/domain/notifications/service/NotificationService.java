@@ -51,6 +51,7 @@ public class NotificationService {
     public void deleteOldNotifications() {
         LocalDateTime thresholdDate = LocalDateTime.now().minusDays(14);
         List<Notification> oldNotifications = notificationRepository.findByReadStatusTrueAndCreatedAtBefore(thresholdDate);
+        log.info("14일 이상 지난 읽은 알림 {}건 삭제", oldNotifications.size());
         notificationRepository.deleteAll(oldNotifications);
     }
 
