@@ -19,9 +19,13 @@ public class SseEmitterHandler {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         emittersPerTopic.computeIfAbsent(topic, key -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(emitter);
 
-        emitter.onCompletion(() -> removeEmitter(topic, emitter));
-        emitter.onTimeout(() -> removeEmitter(topic, emitter));
-        emitter.onError(e -> removeEmitter(topic, emitter));
+//        emitter.onCompletion(() -> removeEmitter(topic, emitter));
+//        emitter.onTimeout(() -> removeEmitter(topic, emitter));
+//        emitter.onError(e -> removeEmitter(topic, emitter));
+
+        emitter.onCompletion(() -> log.info("🔴 SSE connection completed for topic: {}", topic));
+        emitter.onTimeout(() -> log.warn("⏳ SSE connection timed out for topic: {}", topic));
+        emitter.onError((e) -> log.error("❌ SSE connection error for topic: {}", topic, e));
 
         return emitter;
     }
