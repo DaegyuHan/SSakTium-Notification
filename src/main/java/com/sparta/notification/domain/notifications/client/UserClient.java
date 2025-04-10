@@ -1,6 +1,7 @@
 package com.sparta.notification.domain.notifications.client;
 
 import com.sparta.notification.config.FeignClientConfig;
+import com.sparta.notification.domain.notifications.dto.FollowerResponseDto;
 import com.sparta.notification.domain.notifications.dto.UserInfoResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,5 +15,5 @@ public interface UserClient {
     UserInfoResponseDto getMyInfo();
 
     @GetMapping("/v1/api/internal/friends/{userId}/followers/ids")
-    List<Long> getFollowerIds(@PathVariable("userId") Long userId);
+    List<FollowerResponseDto> getFollowerIds(@PathVariable("userId") Long userId);
 }
